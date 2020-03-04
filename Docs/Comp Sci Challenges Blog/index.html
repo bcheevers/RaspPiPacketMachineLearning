@@ -1,0 +1,374 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+  <title>Barry'sBlog</title>
+  <meta name="description" content="website description" />
+  <meta name="keywords" content="website keywords, website keywords" />
+  <meta http-equiv="content-type" content="text/html; charset=windows-1252" />
+  <link rel="stylesheet" type="text/css" href="style/style.css" />
+</head>
+
+<body>
+  <div id="main">
+    <div id="header">
+      <div id="logo">
+        <div id="logo_text">
+          <!-- class="logo_colour", allows you to change the colour of the text -->
+          <h1><a href="index.html">Barry's<span class="logo_colour">Blog</span></a></h1>
+          <h2>Packets, Python and Machine Learning.</h2>
+        </div>
+      </div>
+      <div id="menubar">
+      </div>
+    </div>
+    <div id="content_header"></div>
+    <div id="site_content">
+      <div id="content">
+        <!-- insert the page content here -->
+        <h1>
+    Introduction
+</h1>
+<p>
+    At Queens University Belfast there is a module called &ldquo;Computer Science
+    Challenges&rdquo; which I am enrolled on. This module sets Year 1 students a
+    momentous computing task for their experience level and then sees how far
+    we get along. The main goal is not to complete the task but to create
+    things of value which will be useful to people.
+</p>
+<p>
+    My task was:
+</p>
+<p>
+&ldquo;Create <strong>a raspberry pi, npcap and wireshark</strong> based<strong>packet sniffing network monitor</strong> that can be attached to<strong>wired and wireless networks</strong> and    <strong>passively monitor network communications</strong>. Time permitting
+    explore how anomalous transmissions can be detected using machine learning
+    based modelling of normal network behaviour. This project also requires an
+    analysis of the data protection and privacy implications of the
+    technology.&rdquo;
+</p>
+<h1>
+    QEMU &amp; Linux
+</h1>
+<p>
+    This task intimidated me. I mean what would your response be to a paragraph
+    in which you don&apos;t know what half the words mean! Anyway, the first step I
+    took to tackle this problem was to dual boot Linux onto my laptop. Why?,
+    Well I knew from my (very limited) experience of using a raspberry pi is
+    that they are very slow. An emulator would be much easier to work with.
+    Enter <a href="https://www.qemu.org/">QEMU</a>.
+    QEMU is a generic and open source machine emulator and virtualizer, perfect
+    for emulating a raspberry pi. Now granted QEMU can be run on a Windows
+    operating system however there is performance loss running on Windows. I
+    manage to install the Raspbian onto the QEMU, learning a variety of useful
+    Linux commands. I had not used Linux before so I found this very rewarding
+    to get working. Now on my machine the emulator still ran very slowly. This
+    is because raspberry pis run on an ARM processor whilst my machine ran on
+    an Intel x86. This difference in instruction sets meant that the
+    instructions themselves needed to be translated from Intel x86 to ARM. You
+    could imagine that the amount of instructions needed at one time would be
+    quite high, so most processing resources were spent on this conversion. The
+    work setting up this emulator was all for nothing upon the discovery of
+    what NPCap was&hellip;
+</p>
+<h1>
+    NPCap
+</h1>
+<p>
+Npcap is the Nmap Project's packet sniffing (and sending) library for    <strong>Windows</strong>. It is based on the discontinued WinPcap library,
+    but with improved speed, portability, security, and efficiency. NPCap is
+    dependent on the Windows operating system, thus I couldn&apos;t run it on my
+    raspberry pi, let alone my Linux emulated raspberry pi. I did some digging
+    (
+    <a href="https://github.com/nmap/nmap/issues/1590">
+        https://github.com/nmap/nmap/issues/1590
+    </a>
+    ,
+    <a href="https://www.raspberrypi.org/forums/viewtopic.php?t=143622)">
+        https://www.raspberrypi.org/forums/viewtopic.php?t=143622)
+    </a>
+    ) which reaffirmed that I could not use that package. This vexed me
+    massively, as learning how to use NPCap took a long time, as someone who
+    has not done c programming before. I even created a how-to guide for it, in
+    order to help new users (INSERT LINK TO HOW-TO GUIDE HERE).
+</p>
+<h1>
+    TShark
+</h1>
+<p>
+    What was I to do? With no packet sniffing package, how was I to progress?
+    After much deliberation I decided to use tshark instead. Tshark is the
+    terminal version of Wireshark, so it adhered to the project spec. It also
+    works on most operating systems, including Raspbian.
+</p>
+<p>
+    I found using tshark to be a very enjoyable experience. After getting use
+    to the syntax, I found myself reading and writing packet files from both
+    wired and wireless networks. Since the GUI version, Wireshark, is much more
+    popular than the terminal based version, there was limited learning
+    resources. I created a
+    <a href="https://www.youtube.com/watch?v=NvKiyHCRXrU&amp;t=3s">
+        video tutorial
+    </a>
+    giving an overview of how tshark
+    works
+    ). You may ask why I would use tshark over Wireshark for this project. The
+    answer is that Wireshark, being GUI based requires a lot more computing
+    resources than tshark.
+</p>
+<h1>
+    Setting Up Raspberry Pi
+</h1>
+<p>
+At this stage I assembled my raspberry pi. As this device was for    <strong>wired </strong>and <strong>wireless</strong> networks, I was
+    provided with a usb wireless adapter which allowed the raspberry pi to
+    connect to the internet.
+</p>
+<p>
+    Here is a list of what peripherals I used:
+</p>
+<ul>
+  <li>
+    Raspberry Pi 3 (Running Raspbian 4.19 Buster)
+  </li>
+    <li>
+        Monitor
+    </li>
+    <li>
+        Mouse
+    </li>
+    <li>
+        Keyboard
+    </li>
+    <li>
+        Wi-Fi Adapter
+    </li>
+</ul>
+<p>
+    Computing resources are scare on a raspberry pi, so any saving you can
+    accrue is for the best.
+</p>
+
+    <img
+        width="602"
+        height="293"
+        src="images/Tshark.png"
+        align="right"
+        hspace="12"
+        alt="TShark in action
+
+Description automatically generated"
+    />
+<p></p>
+<p>
+    Now with the packet files being produced, I now needed a way to send them
+    to my laptop in an efficient manner.
+</p>
+<h1>
+    File Sending
+</h1>
+<p>
+    I tried to use WinSCP to send files to and from my raspberry pi. WinSCP is
+    a free SFTP,SCP,S3 and FTP client application. After watching a tutorial on
+    the subject, I managed to link my laptop and the raspberry pi with an SSH
+connection using the wireless network. I was now able to    <strong>manually</strong> send files to and from my laptop and the
+raspberry pi. This was good start, however I needed to    <strong>automatically</strong> send the files between the two machines.
+    This would involve setting up an SFTP server. I looked feverously for a
+    good tutorial on the subject matter, but unfortunately, I could not find
+    one. That process took about 2 days, due to the constant trying and
+    restarting of different methods. Eventually I gave up on this particular
+    approach and decided to do use something else&hellip;
+</p>
+<p>
+    Flask is a micro web framework written in Python. It is used to build
+    simple websites and act as a webserver. How could this package be of use in
+    this situation? I set up a webserver using Flask, which allowed me to then
+    setup a URL which would, when visited, would automatically download a
+    selected file. I ran this flask server on my raspberry pi and set the
+    desired file to be a packet file. It worked perfectly… after a few
+    iterations of the initialisation command. I was over the moon that I had
+    found a solution to this problem as now I would be able to have a constant
+    stream of packet files being sent to my laptop for processing.
+</p>
+<p>
+    <img
+        width="602"
+        height="319"
+        src="images/Flask.png"
+        align="left"
+        hspace="12"
+        alt="Flask Web Server Code"
+    />
+</p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p>
+    In order to receive the file, I had to use another library, Pycurl, which
+    is a Libcurl wrapper for python. The way it works is that Pycrul receives
+    the file as a byte string. Pycrul then writes this byte string as a file
+    with the specified extension.
+</p>
+<p>
+    <img
+        width="482"
+        height="327"
+        src="images/Flask2.png"
+        align="left"
+        hspace="12"
+        alt="PyCurl Reader"
+    />
+</p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<h1>
+    Processing (Cleaning) Data
+</h1>
+<p>
+    Speaking of processing, this is what I moved onto next. My goal at this
+    stage was to do a &ldquo;proof of concept&rdquo; for my machine learning model as I had
+    no prior experience with machine learning and wanted something relatively
+    simple to start. I decided that my machine learning model would determine
+    if a packet was part of a DDOS or not. PyShark is a python wrapper for
+    tshark. This is how I &ldquo;read&rdquo; my .pcap files into my program. I was very
+    impressed by PyShark&apos;s capabilities. I made a <a> beginner's guide<https://www.youtube.com/watch?v=dL3X4IAZVlA"></a> to help ease the difficulty curve of using the library.
+</p>
+<p>
+    In order to learn the basics of machine learning, I watched a couple of 
+    <a href="https://www.fast.ai/">fast.ai</a> lectures
+    for their &ldquo;Machine Learning for Coders&rdquo; course. These lectures were great
+    as they immediately told me how to implement a machine learning algorithm.
+    Note that in the lectures they use a RandomForestRegressor but for my
+    problem I needed a RandomForestClassifier. This is because I wanted to
+    classify my packets into DDOS packets or normal packets.
+</p>
+<p>
+    Cleaning the data for this project proved quite tricky. In the fast.ai
+    lectures it is made explicitly clear that all data must be in numerical
+    form for the random forest to work. This means that data such as IP
+    Addresses need to be treated as categories and assigned their own
+    corresponding code. Also, certain protocols such as ICMP do not have port
+    addresses so accounting for these protocols was also something to look out
+    for.
+</p>
+<p>
+    <img
+        width="332"
+        height="125"
+        src="images/ICMP.png"
+        align="center"
+        hspace="12"
+        alt="A close up of text on a black background
+
+Description automatically generated"
+    />
+</p>
+<p>
+    Fast.ai recommends using pandas, which is a high-level data manipulation
+    package for python, to manipulate data. This package, though extremely
+    useful, did have some syntax and commands which were not very intuitive.
+    Still I managed to clean the data for use in the model.
+</p>
+<h1>
+    Datasets
+</h1>
+<p>
+    In order to train and test my model I had to source a few datasets for my
+    project. This took a while as there are not many publicily available
+    datasets of useful packet data files. Here is the list of useful datasets I
+    found:
+</p>
+<ul>
+  <li>
+    Netresec is an independent
+    software vendor with focus on the network security field. They also
+    maintain a <a href=https://www.netresec.com/?page=PcapFiles>dataset of pcap files</a>, some of which come from honey pots.
+  <li>
+
+<p>
+    <a
+        href="https://www.sciencedirect.com/science/article/pii/S0167404814000923"
+    >
+        The paper &ldquo;An empirical comparison of botnet detection methods&rdquo;
+    </a>
+<p>
+    hits a lot of the same themes that my project has.
+</p>
+<p>
+    The scholars in this paper created their own
+    <a href=https://www.stratosphereips.org/datasets-ctu13>public dataset</a>.
+</p>
+    <li>
+        University of New Brunswick has many different
+        <a href="https://www.unb.ca/cic/datasets/ddos-2019.html">
+            pcap datasets
+        </a>
+    </li>
+<h1>
+    Current Status &amp; Possible Improvements
+</h1>
+<p>
+    I am now currently debugging the prediction method for my model. Once this
+    is complete, I can test my model.
+</p>
+<p>
+    This project could be expanded and improved in many different ways:
+</p>
+<ul>
+  
+
+    <li>Expanding the threat detection aspect of the model, so that it can detect
+    more than just DDOS attacks.</li>
+
+    <li>Trying different machine learning algorithms other than Random Forests</li>
+
+
+    <li>Expand the project to give diagnostic information to help solve the
+    problem/threat detected.</li>
+
+
+    <li>Expand the project so that the device can disconnect the problem computer
+    from the network.</li>
+</ul>
+      </div>
+    </div>
+    <div id="content_footer"></div>
+    <div id="footer">
+      <p><a href="index.html">Home</a> | <a href="examples.html">Examples</a> | <a href="page.html">A Page</a> | <a href="another_page.html">Another Page</a> | <a href="contact.html">Contact Us</a></p>
+      <p>Copyright &copy; shadowplay_1 | <a href="http://validator.w3.org/check?uri=referer">HTML5</a> | <a href="http://jigsaw.w3.org/css-validator/check/referer">CSS</a> | <a href="http://www.html5webtemplates.co.uk">Free CSS Templates</a></p>
+    </div>
+  </div>
+</body>
+</html>
