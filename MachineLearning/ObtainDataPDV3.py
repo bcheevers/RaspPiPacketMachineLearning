@@ -2,11 +2,37 @@ import pandas as pd
 import numpy as np
 import pyshark
 import sys
+import warnings
 from sklearn.ensemble import RandomForestClassifier
+from pandas.api.types import is_string_dtype, is_numeric_dtype
+def fix_missing(df,col,name):
+	if is_numeric_dtype(col):
+		if pd.isnull(col).sum(): df[name+'_na'] = pd.isnull(col)
+		df[name]= col.fillna(col.median())
+def numericalize(df,col,name,max_n_cat):
+	if not is_numeric_dtype(col) and (max_n_cat is None or col.nunique()>max_n_cat):
+		df[name] = col.cat.codes+1
+def train_cats(df_raw):
+	for n,c in df.items():
+		if is_string_dtype(c): df[n] = c.astype('category')
+		
+def proc_df(df,y_fld, skip_flds=None, do_scale=False, preproc_fn=None, max_n_cat=None,subset=None):
+	if not skip_flds: skip_flds=[]
+	#if subset: df = get_sample(df,subset)
+	df = df.copy()
+	if preproc_fn: preproc_fn(df)
+	y = df[y_fld].values
+	df.drop(skip_flds+[y_fld], axis=1,inplace=True)
+	
+	for n,c in df.items(): fix_missing(df,c,n)
+	for n,c in df.items(): numericalize(df,c,n,max_n_cat)
+	res = [pd.get_dummies(df,dummy_na=True),y]
+	if not do_scale: return res
+	return res
 def ObtainData():
 	# Obtain the data: Timestamp,SourceIP,SourcePort,DestinationIP,DestinationPort,Protocol,DDOS?
 	#Calculate Mean Packets Per Second per
-	cap = pyshark.FileCapture('QueensNetworkNormal1.pcap')
+	cap = pyshark.FileCapture('test1.pcap')
 	counter=1
 	packetFileData=[]
 	for packet in cap:
@@ -103,9 +129,14 @@ def CalculateMeanPacketsPerSecond(df):
 	with pd.option_context('display.max_rows', None, 'display.max_columns', None):
 		print(df)
 	return df
-		
-		
+	
 df = ObtainData()
 df = CalculateMeanPacketsPerSecond(df)
-#m = RandomForestClassifier(n_jobs=-1)
-#m.fit(df.drop('DDOS', axis=1), df.DDOS)
+df['Timestamp']=df['Timestamp'].astype('object')
+train_cats(df)
+print(df.dtypes)
+df, y = proc_df(df,'DDOS')
+print(df.columns)
+m = RandomForestClassifier(n_jobs=-1)
+m.fit(df,y)
+print("Score: "+str((m.score(df,y))))
