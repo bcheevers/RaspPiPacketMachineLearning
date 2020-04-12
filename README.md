@@ -15,13 +15,13 @@ In the DecisionTreeCode you will find the DDOS,machine learning code advertised 
 ### Docs
 In the Docs folder you will find multiple word documents. These "Diaries" are apart of the module and were updated throughout.
 * Comp Sci Challenge Diary
-  *Updated Daily, this document details the ups and downs of the development of this project.
+  * Updated Daily, this document details the ups and downs of the development of this project.
 * Weekly Learning Log
-  *Updated Weekly, this document contains a bullet point list of what commands,libraries,concepts I had learnt that week.
+  * Updated Weekly, this document contains a bullet point list of what commands,libraries,concepts I had learnt that week.
 * Weekly Planning Diary
-  *Updated Weekly, this document contains my plans for the project. They may seem too ambitious but we shall see what happens!
+  * Updated Weekly, this document contains my plans for the project. They may seem too ambitious but we shall see what happens!
 * Blog Post
-  *For part of the module I had to create a Blog Post for QLab. I like to write the contents in a Word Doc first. Essentialy this is a Word Document form of the final Blog Post.
+  * For part of the module I had to create a Blog Post for QLab. I like to write the contents in a Word Doc first. Essentialy this is a Word Document form of the final Blog Post.
 There is also the relevent HTML and CSS files for the website in the "Comp Sci Challenges Blog" folder.
 
 ### Flask
