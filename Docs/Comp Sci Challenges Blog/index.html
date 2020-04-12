@@ -77,7 +77,7 @@
     NPCap
 </h1>
 <p>
-Npcap is the Nmap Project's packet sniffing (and sending) library for    <strong>Windows</strong>. It is based on the discontinued WinPcap library,
+Npcap is the Nmap Project&apos;s packet sniffing (and sending) library for    <strong>Windows</strong>. It is based on the discontinued WinPcap library,
     but with improved speed, portability, security, and efficiency. NPCap is
     dependent on the Windows operating system, thus I couldn&apos;t run it on my
     raspberry pi, let alone my Linux emulated raspberry pi. I did some digging
@@ -266,7 +266,7 @@ raspberry pi. This was good start, however I needed to    <strong>automatically<
     simple to start. I decided that my machine learning model would determine
     if a packet was part of a DDOS or not. PyShark is a python wrapper for
     tshark. This is how I &ldquo;read&rdquo; my .pcap files into my program. I was very
-    impressed by PyShark&apos;s capabilities. I made a <a> beginner's guide<https://www.youtube.com/watch?v=dL3X4IAZVlA"></a> to help ease the difficulty curve of using the library.
+    impressed by PyShark&apos;s capabilities. I made a <a> beginner&apos;s guide<https://www.youtube.com/watch?v=dL3X4IAZVlA"></a> to help ease the difficulty curve of using the library.
 </p>
 <p>
     In order to learn the basics of machine learning, I watched a couple of 
@@ -343,12 +343,106 @@ Description automatically generated"
   I went about finding these datasets by browsing the top academic papers in the subject on Google Scholars. I also searched online via Google to see if any companies or universities had released public datasets.
 </p>
 <h1>
-    Current Status &amp; Possible Improvements
+    Debugging the Machine Learning.
 </h1>
 <p>
-    I am now currently debugging the prediction method for my model. Once this
-    is complete, I can test my model.
+    When I had created my first model, the accuracy score was only 0.25. This
+    meant that the model was worse at predicting DDOS packets than randomly
+    guessing. This was very confusing as, on the outside, the code looked
+    correct. I began debugging by checking that the data had been processed
+    correctly. I found no issue with this. I then checked the accuracy metric
+    itself to see if it was being calculated incorrectly. That was also
+    correct. So that left only one place the error could be, the model itself.
 </p>
+
+<p>
+    I began by downloading and installing Graphiz, which is the program used to
+    visualise the internals of the machine learning model. I was using 100
+    RandomTrees in the model, which meant that 100 tree diagrams where produce.
+    Here are two of them:
+</p>
+<p>
+    <img
+        width="602"
+        height="339"
+        src="images/Forest1.png"
+        align="left"
+        hspace="12"
+    />
+</p>
+<p>
+    <img
+        width="602"
+        height="339"
+        src="images/Forest2.png"
+        align="left"
+        hspace="12"
+    />
+</p>
+<p>
+    In the first tree diagram lies the cause for the poor accuracy rating. The
+    RandomForest was using the Timestamp as a feature and had essentially
+    learnt that DDOS attacks occur at certain times and if a packet is not sent
+    at this time then it is not a DDOS packet. Of course, this assumption is
+    incorrect. Finding this issue took a while, and so did finding the
+    solution. I removed the Timestamp feature from the model, as the time the
+    packet was sent has no bearing on whether it is a DDOS packet. I then
+    changed the model from a RandomForestClassifier to a
+    DecisionTreeClassifier. The reason for this change was that this model
+    would be easier to debug (as there is only 1 tree as apposed to 100) and
+    would provide greater clarity on why which packets are being classified
+    into the two groups. Here is the Graphiz diagram for the
+    DecisionTreeClassifier:
+</p>
+<p>
+      <img
+        width="566"
+        height="555"
+        src="images/DTree.png"
+        align="left"
+        hspace="12"
+    />
+</p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p>
+  It felt very rewarding to have resolved this issue as I gained a greater insight into how these types of machine learning algorithms work. This change increased the accuracy from 0.25 to 0.75, which is quite the improvement.
+</p>
+<h1>
+    Current Status &amp; Possible Improvements
+</h1>
 <p>
     This project could be expanded and improved in many different ways:
 </p>
@@ -368,6 +462,655 @@ Description automatically generated"
     <li>Expand the project so that the device can disconnect the problem computer
     from the network.</li>
 </ul>
+<h1>
+    Testing &amp; Analysis System
+</h1>
+<p>
+    Below I have outlined all the possible things I can think of that may go
+    wrong with the project, in a systematic approach.
+</p>
+<table border="1" cellspacing="0" cellpadding="0" width="756">
+    <tbody>
+        <tr>
+            <td width="158" valign="top">
+                <p align="center">
+                    <strong>Problem</strong>
+                </p>
+            </td>
+            <td width="158" valign="top">
+                <p align="center">
+                    <strong>Severity</strong>
+                </p>
+            </td>
+            <td width="158" valign="top">
+                <p align="center">
+                    <strong>Probability of it occurring.</strong>
+                </p>
+            </td>
+            <td width="158" valign="top">
+                <p align="center">
+                    <strong>Priority</strong>
+                </p>
+            </td>
+            <td width="124" valign="top">
+                <p align="center">
+                    <strong>Perceived Amount Of Work To Resolve</strong>
+                </p>
+            </td>
+        </tr>
+        <tr>
+            <td width="158" valign="top">
+                <p>
+                    System can handle large packet files
+                </p>
+            </td>
+            <td width="158" valign="top">
+                <p>
+                    Medium
+                </p>
+            </td>
+            <td width="158" valign="top">
+                <p>
+                    Medium
+                </p>
+            </td>
+            <td width="158" valign="top">
+                <p>
+                    Medium
+                </p>
+            </td>
+            <td width="124" valign="top">
+                <p>
+                    Medium
+                </p>
+            </td>
+        </tr>
+        <tr>
+            <td width="158" valign="top">
+                <p>
+                    System doesn&apos;t detect the latest network attacks
+                </p>
+            </td>
+            <td width="158" valign="top">
+                <p>
+                    High
+                </p>
+            </td>
+            <td width="158" valign="top">
+                <p>
+                    High
+                </p>
+            </td>
+            <td width="158" valign="top">
+                <p>
+                    High
+                </p>
+            </td>
+            <td width="124" valign="top">
+                <p>
+                    High
+                </p>
+            </td>
+        </tr>
+        <tr>
+            <td width="158" valign="top">
+                <p>
+                    The system can&apos;t detect &quot;niche&quot; network attacks which do
+                    not have a lot of data about them.
+                </p>
+            </td>
+            <td width="158" valign="top">
+                <p>
+                    High
+                </p>
+            </td>
+            <td width="158" valign="top">
+                <p>
+                    High
+                </p>
+            </td>
+            <td width="158" valign="top">
+                <p>
+                    High
+                </p>
+            </td>
+            <td width="124" valign="top">
+                <p>
+                    High
+                </p>
+            </td>
+        </tr>
+        <tr>
+            <td width="158" valign="top">
+                <p>
+                    The system isn&apos;t dynamic and can&apos;t update itself.
+                </p>
+            </td>
+            <td width="158" valign="top">
+                <p>
+                    Medium
+                </p>
+            </td>
+            <td width="158" valign="top">
+                <p>
+                    High
+                </p>
+            </td>
+            <td width="158" valign="top">
+                <p>
+                    Medium
+                </p>
+            </td>
+            <td width="124" valign="top">
+                <p>
+                    Medium
+                </p>
+            </td>
+        </tr>
+        <tr>
+            <td width="158" valign="top">
+                <p>
+                    Raspberry Pi overheating.
+                </p>
+            </td>
+            <td width="158" valign="top">
+                <p>
+                    Medium
+                </p>
+            </td>
+            <td width="158" valign="top">
+                <p>
+                    Low
+                </p>
+            </td>
+            <td width="158" valign="top">
+                <p>
+                    Low
+                </p>
+            </td>
+            <td width="124" valign="top">
+                <p>
+                    Low
+                </p>
+            </td>
+        </tr>
+        <tr>
+            <td width="158" valign="top">
+                <p>
+                    False Positives.
+                </p>
+            </td>
+            <td width="158" valign="top">
+                <p>
+                    High
+                </p>
+            </td>
+            <td width="158" valign="top">
+                <p>
+                    High
+                </p>
+            </td>
+            <td width="158" valign="top">
+                <p>
+                    High
+                </p>
+            </td>
+            <td width="124" valign="top">
+                <p>
+                    Low
+                </p>
+            </td>
+        </tr>
+        <tr>
+            <td width="158" valign="top">
+                <p>
+                    Disconnected from Network
+                </p>
+            </td>
+            <td width="158" valign="top">
+                <p>
+                    High
+                </p>
+            </td>
+            <td width="158" valign="top">
+                <p>
+                    Medium
+                </p>
+            </td>
+            <td width="158" valign="top">
+                <p>
+                    High
+                </p>
+            </td>
+            <td width="124" valign="top">
+                <p>
+                    Medium
+                </p>
+            </td>
+        </tr>
+        <tr>
+            <td width="158" valign="top">
+                <p>
+                    Dealing with Corrupted Packets
+                </p>
+            </td>
+            <td width="158" valign="top">
+                <p>
+                    Medium
+                </p>
+            </td>
+            <td width="158" valign="top">
+                <p>
+                    High
+                </p>
+            </td>
+            <td width="158" valign="top">
+                <p>
+                    Medium
+                </p>
+            </td>
+            <td width="124" valign="top">
+                <p>
+                    Medium
+                </p>
+            </td>
+        </tr>
+        <tr>
+            <td width="158" valign="top">
+                <p>
+                    Physical Attack on the System
+                </p>
+            </td>
+            <td width="158" valign="top">
+                <p>
+                    High
+                </p>
+            </td>
+            <td width="158" valign="top">
+                <p>
+                    Low
+                </p>
+            </td>
+            <td width="158" valign="top">
+                <p>
+                    Low
+                </p>
+            </td>
+            <td width="124" valign="top">
+                <p>
+                    High
+                </p>
+            </td>
+        </tr>
+        <tr>
+            <td width="158" valign="top">
+                <p>
+                    75% Accuracy Rating
+                </p>
+            </td>
+            <td width="158" valign="top">
+                <p>
+                    Medium
+                </p>
+            </td>
+            <td width="158" valign="top">
+                <p>
+                    High
+                </p>
+            </td>
+            <td width="158" valign="top">
+                <p>
+                    High
+                </p>
+            </td>
+            <td width="124" valign="top">
+                <p>
+                    High
+                </p>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<p>
+    Ideally, I would like to be able to numerically measure each point in the
+    testing process i.e. to what extent the problem is solved. In the sections
+    below the first paragraph will detail how I would approach solving the
+    specific problem, the second will be an attempt to numerically measure the
+    extent to which the problem is solved.
+</p>
+<p>
+    <h2>System can handle large packet files</h2>
+</p>
+<p>
+    I would have to test if the system can handle extremely large packet files
+    (i.e. the datasets) and still produce correct results. Unfortunately, my
+    laptop is simply not up to the task, so I would need a computer with more
+    computational resources or an externally rented server. The system will
+    still work if I cannot run the large datasets past it, thus it is
+    categorised as &quotMedium&quot for severity.
+</p>
+<p>
+    To design a numeric test for this, we could create &quotlevels&quot. Each level
+    would have a file associated with it and the size of the file increases by
+    ten times the previous levels file size. This way one can assign a &quotlevel&quot
+    to the system based on the highest level achieved without breaking.
+</p>
+<p>
+    <h2>System doesn&apos;t detect the latest network attacks</h2>
+</p>
+<p>
+    Using the latest DDOS attacks to attack a device and record the packet
+    files from that attack is how I would test if the system can detect the
+    latest network attacks. Kali Linux seems to be a good source for these
+    types of attacks. More specifically I would use Slowloris, as it uses
+    partial HTTP requests, which may prove challenging if the partial HTTP
+    packets are corrupted and thus perhaps not picked up by tshark. Another
+    attack which could be used to test the system would be HOIC (High Orbit Ion
+    Canon), as it uses a mixture HTTP, GET and POST requests. This mix of
+    packet protocols may confuse the system and result in a false negative. I&aposm
+    unsure of how hard it would be to use Kali Linux, but with enough time I&aposm
+    sure I could do it. If the system managed to pass these tests without
+    alteration, I would be very impressed.
+</p>
+<p>
+    After garnering the latest network threats, I could create a test for the
+    system, with a numeric score at the end, which would involve the system
+    being tested against these new threats. Of course, these threats would be
+    on a secure private network, as to not affect other people. The challenge
+    here will be obtaining these latest network threats, as those who possess
+    them may not provide them.
+</p>
+<p>
+    <h2>
+        The system can&apos;t detect &quotniche&quot network attacks which do not have a lot
+        of data about them.
+    </h2>
+</p>
+<p>
+    A big concern for me is having a niche/atypical attack get through the
+    system undetected. The trouble with these types of attacks is that there is
+    very little data on them (due to being niche) and so there is scant
+    information to train the system on. To combat this there are two options.
+    Either I could write a web scraper that would scour the internet for every
+    scrap of information on these niche attacks or I could simply let the
+    attack pass through but flag it. Once flagged, the attack can simply be
+    inspected, and then specific rules added to the system in order to prevent
+    the attack from passing in again. The second option does not use the
+    machine learning aspect of the project but might be the best option in
+    these sorts of situation, one in which you have very limited information.
+</p>
+<p>
+    To tackle this problem, I may need to build a separate model which detects
+    anomalies in network traffic. Anomaly detection is essentially a model
+    which learns what normal traffic looks like, and when it detects a
+    deviation from the normal, it alerts. The resulting alert would not lead to
+    a network shutdown, ( as deviations from normal network traffic are more
+    common and less severe then attempted network attacks), but would instead
+    prompt a network manager to investigate. This solves the issue of not
+    having any training data for niche attacks.
+</p>
+<p>
+    <h2>The system isn&apos;t dynamic and can&apos;t update itself.</h2>
+</p>
+<p>
+    The nature of network attacks means that they are constantly changing.
+    Attackers create new attacks to get over pre-existing defences. As a
+    result, there is a need for the system to be dynamic. This dynamic nature
+    is provided by the machine learning algorithm. However, this dynamic nature
+    can only be continued if there is a constant stream of new information on
+    the latest attacks. Therefore, I would need to link the system to
+    Metasploit. Metasploit is the world&apos;s most used penetration testing
+    framework and is open sourced. This global repository for all network
+    attacks is too valuable to pass up.
+</p>
+<p>
+    Updating the rules for the system essentially means sending a file to the
+    system remotely. This is a simple true or false, does the file arrive or
+    doesn&apost it? I think the issue comes whenever there are multiple systems in
+    place, which all need updating.
+</p>
+<p>
+    <h2>Raspberry Pi overheating.</h2>
+</p>
+<p>
+    I am by no means an electrician; however, I do know that standard raspberry
+    pis do not have much in terms of computational resources. The raspberry pi
+    is already set up in command line mode, so it has no desktop GUI to
+    maintain. Still I do worry about the pi overheating or breaking due to the
+    number of complex processes it must carry out. It may be necessary to
+    modify the raspberry pi. I have these suggestions; upgrade the CPU, replace
+    the heatsink and change the case to prevent overheating. I think the
+    current version of my raspberry pi is fine, and the software can be easily
+    moved to a raspberry pi 4, so perhaps customising the raspberry pi is
+    excessive.
+</p>
+<p>
+    I&aposm not sure on how to numerically measure overheating. I suppose taking
+    the systems temperature throughout operation is probably the best option.
+</p>
+<p>
+    <h2>False Positives</h2>
+</p>
+<p>
+    A false positive would not be good for the system&aposs credibility. Due to
+    this project using machine learning, I would imagine a few false positives
+    occurring initially. This is because the datasets the algorithm has trained
+    on may be skewed. The longer the system operates, the &quotsmarter&quot it gets,
+    thus the likelihood of a false positive decreases. In conclusion there
+    isn&apos;t much I can do to prevent these false positives. This might be a na&Iuml;ve
+    approach.The
+    incorporation of a logging system could be useful, as it would tell us
+    exactly why a false positive occurred.
+</p>
+<p>
+    False positives will most likely have to be monitored by the user. If a
+    false positive does occur, the user could send the log file to me. It may
+    be the case that I would have to add explicit rules to the system in order
+    to avoid these false positives.
+</p>
+<p>
+    Another approach for tackling False Positives is by having the model create
+    confidence values for each of its classifications,(it already does his
+    internally, this value is called the gini value). Currently the system
+    values equally a non-DDOS packet and a normal packet. We could alter the
+    confidence threshold for a DDOS packet so that the system would have to be
+    85%(or other value) certain that the packet is a DDOS packet and to trigger
+    a response.
+</p>
+<p>
+    <h2>Disconnected from Network</h2>
+</p>
+<p>
+    If the system is disconnected from the network, a contingency plan would
+    need to be put in place. This plan could either consist of the system
+    triggering the alarm (as a malicious person could have disconnected the
+    system purposefully), or the system could remain in a &quotsuspended state&quot and
+    will stay in that state until it is reconnected to the network. In either
+    case I don&apos;t think that this would be too difficult to implement and adds
+    more security and reliability to the system. The log would need to readily
+    available to its users, so perhaps an external display is required.
+</p>
+<p>
+    <br/>
+    This is a simple test, either the system performs the desired response when
+    it is disconnected, or it does not. This does not need to be in a numeric
+    form.
+</p>
+<p>
+    <h2>Dealing with Corrupted Packets</h2>
+</p>
+<p>
+    Corrupted packets are a fact of life when it comes to network
+    communication. Sometimes these packets are just dropped by the devices that
+    receive them, other times they are re transmitted. An enquiry will have to
+    be done on how frequently corrupt packets affect the system. There may be
+    no need to consider this problem, since those packets are simply dropped.
+    If this is not the case however the system already accounts for packets
+    with missing data (the _na collumns) so the system will not crash.
+</p>
+<p>
+    A test composing of packet files containing corrupted packets can be
+    devised. To test the systems response to corrupted packets, the system can
+    read each packet file sequentially. We can then assign a &quotscore&quot to the
+    system based on its response to these packets.
+</p>
+<p>
+    <h2>Physical Attack on the System</h2>
+</p>
+<p>
+    An attacker could physically break the raspberry pi, rendering the system
+    useless and thus allowing attacks to go through unnoticed. I&apos;m not worried
+    about this though as once all necessary modifications have been completed
+    and the device is ready to be used by everyone, we can mould a stainless
+    steel case for the system, thus making it nearly impossible for an attacker
+    to break the system.
+</p>
+<p>
+    A stress test could be created using a piston which will exert pressure
+    onto the case of the system. The value of the force required to break the
+    case will be recorded. Using this data, we could then further improve the
+    case. It would be worth orientating the case a different way each time as
+    this would ensure a level of security on all sides of the case.
+</p>
+<p>
+    <h2>75% Accuracy Rating</h2>
+</p>
+<p>
+    Right now, the machine learning algorithm obtains a 75% accuracy rate. This
+    accuracy value, while good, is not the best it could be. To increase
+    accuracy using just one dataset is leads to overfitting however so I must
+    be very careful about how I go about this.
+</p>
+<p>
+    To solve this, I suggest further refinement of the features, so that only
+    the most impactful features are kept. This would mean that non impactful
+    features could be removed and so that would inherently increase accuracy,
+    as the model would not be led astray. Then further testing would be done on
+    a wider variety of datasets.
+</p>
+<p>
+    The numeric results at the end of testing could be used to grade the system
+    overall. This numerical result would be useful if the system was to be mass
+    produced.
+</p>
+<p>
+    In terms of Analysis, I can already visualize the Decision tree algorithm
+    using Graphvis. It might be useful to create a series of matplot lib graphs
+    akin to the one below:
+</p>
+<p>
+    <img
+        width="602"
+        height="451"
+        src="images/Bar.png"
+        align="left"
+        hspace="12"
+    />
+</p>
+<p>
+    I&apos;m not sure what metrics these graphs will track/record, but the more data
+    about the packet files being inputted into the system means that the system
+    will be easier to debug in the future.
+</p>
+<p>
+    <h1>User Analysis</h1>
+</p>
+<p>
+    Another analysis which needs to occur is user analysis. This will allow me
+    to gain insights into how users seem to be using my project. This knowledge
+    would then allow me to steer the project into a direction that the user
+    base would want. Different metrics can be measured in order to achieve
+    this. A simple questionnaire could appear to the user, asking for their
+    feedback. Whilst this may seem intrusive, it could prove useful as it opens
+    a dialogue between creator and user. I have made an example of this
+    questionnaire using Google Forms, again I tried to make it brief, as no one
+    likes filling out tireless forms:
+</p>
+<p>
+    <img
+        width="472"
+        height="386"
+        src="images/Question1.png"
+        align="left"
+        hspace="12"
+    />
+</p>
+<p>
+    <img
+        width="471"
+        height="421"
+        src="images/Question2.png"
+        align="left"
+        hspace="12"
+    />
+</p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p>
+    Another metric I could use is identifying what types of attacks are being
+    detected the most. With this knowledge I can sure up the defences for that
+    attack, and perhaps remove old or out of date attack data, as this would
+    reduce the file size of the project. Another metric could be scanning a
+    user&apos;s network to determine what types of devices are connected to it. With
+    this information, the system could be tailored to defending specific
+    network devices e.g. routers, hubs etc. However, this may prove to be too
+    intrusive. If the user signed an agreement with me for this data, then this
+    wouldn&apos;t be a problem.
+</p>
+<p></p>
+<p></p>
+<p>
+  This was a really interesting project to work on, and I am grateful for having the opportunity to pursue it. Special thanks to QLab for providing hardware resources.
+</p>
+<p>
       </div>
     </div>
     <div id="content_footer"></div>
