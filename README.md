@@ -20,6 +20,8 @@ In the Docs folder you will find multiple word documents. These "Diaries" are ap
   * Updated Weekly, this document contains a bullet point list of what commands,libraries,concepts I had learnt that week.
 * Weekly Planning Diary
   * Updated Weekly, this document contains my plans for the project. They may seem too ambitious but we shall see what happens!
+* Social Media Post
+  * Outlines the reasoning behind the social media post.
 * Blog Post
   * For part of the module I had to create a Blog Post for QLab. I like to write the contents in a Word Doc first. Essentialy this is a Word Document form of the final Blog Post.
 There is also the relevent HTML and CSS files for the website in the "Comp Sci Challenges Blog" folder.
