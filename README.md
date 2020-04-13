@@ -28,7 +28,7 @@ There is also the relevent HTML and CSS files for the website in the "Comp Sci C
 In the flask folder you will find an "app.py" file and a RaspPiParameter.txt file. The app.py file contains flask server code which I ran on the raspberry pi, to allow for quick file sharing from the raspberry pi to the laptop. In this way, continous mointering could be achieved. The Parameter is what is typed into the console run the python file on the raspberry pi.
 
 ### NPCAP
-In this folder you will find C/C++ code relating to the architecture NPCAP. This is what I initialy thought about using for packet sniffing on the raspberry pi, however it is incompatable. This code is part of a how-to guide for the architecture as a good tutorial for it has not been created.
+In this folder you will find C/C++ code relating to the architecture NPCAP. This is what I initialy thought about using for packet sniffing on the raspberry pi, however it is incompatable. This code is part of a how-to guide for the architecture as a good tutorial for it has not been created. Also contained in this folder is the HTML and CSS for the How-To Guide for NPCAP.
 
 ### Testimonial
 In this folder you will find a word document containing my overall opinions on the module aswell as what I have learnt.
