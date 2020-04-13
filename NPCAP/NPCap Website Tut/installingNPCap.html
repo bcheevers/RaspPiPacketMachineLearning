@@ -1,0 +1,96 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+  <title>Installing NPCap</title>
+  <meta name="description" content="website description" />
+  <meta name="keywords" content="website keywords, website keywords" />
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+  <link rel="stylesheet" type="text/css" href="style/style.css" title="style" />
+</head>
+
+<body>
+  <div id="main">
+    <div id="header">
+      <div id="logo">
+        <div id="logo_text">
+          <!-- class="logo_colour", allows you to change the colour of the text -->
+          <h1><a href="index.html">NPCap<span class="logo_colour"> Tutorial</span></a></h1>
+          <h2>By Barry Cheevers</h2>
+        </div>
+      </div>
+      <div id="menubar">
+        <ul id="menu">
+          <!-- put class="selected" in the li tag for the selected page - to highlight which page you're on -->
+          <li><a href="index.html">Home</a></li>
+          <li><a href="installingVS.html">Visual Studio</a></li>
+          <li class="selected"><a href="installingNPCap.html">NPCap Service</a></li>
+          <li><a href="InstallingNPCapSDK.html">NPCap SDK</a></li>
+          <li><a href="configVS.html">Config VS</a></li>
+          <li><a href="obtainingDeviceList.html">Obtain Device List</a></li>
+          <li><a href="sniffingPackets.html">Sniffing Packets</a></li>
+        </ul>
+      </div>
+    </div>
+    <div id="site_content">
+      <div class="sidebar">
+      </div>
+      <div id="content">
+        <!-- insert the page content here -->
+        <h1>Installing NPCap Service</h1>
+        <p>In this section, we learn how to install the NPCap Service.</p>
+        <h2>Preamble</h2>
+        <p>The NPCap Service is required for the NPCap SDK to work. Since packet
+    capture is such a core element to a computer and requires interaction with
+    your computer’s hardware, the NPCap Service will install itself within your
+    System 32 folder. The NPCap Service is a kernel driver. The kernel is the
+    core of the operating system and a driver is a bit of code that runs in the
+    kernel to talk to a hardware device. The System 32 folder is one of the
+    most important folders on your computer as it stores core files relating to
+    your operating system, so naturally any change to this folder will alert
+    your OS to warn you against allowing the installer to run/complete. Do not
+    be alarmed by these warnings, and simply ignore them in this case.</p>
+        <h2>Installing</h2>
+        <p>To install the service, first go to the Nmap website and to the NPCap section <a href=https://nmap.org/npcap/>here</a>. Scroll down until you see the installer, highlighted in the below image.</p>
+        <img
+            src="images/ServiceWebsiteScroll.png"
+            height=145
+            width=602
+            />
+        <p>Click on the NPCap installer link to begin downloading the installer. Once downloaded, run the installer. If you see any warning popups, please ignore them.</p>
+        <p>You will get to a point in the installer where you are faced with this screen.</p>
+        <img
+            src="images/NewNpcapInstall.PNG"
+            height=300
+            width=600
+        <p>Depending upon whether you are planning on using NPCap on just wired or wireless networks, enable the penultimate checkbox. If you are using a wireless, please check your adapter against NPCap’s supported adapters <a  href =https://secwiki.org/w/Npcap/WiFi_adapters> here</a>. The adapter needs to support “Capture Works”. Again, any popups that appear please ignore them. The installation should now be complete however we should check that NPCap has installed successfully.</p>
+        <p>We can check to see if the NPCap Service has been installed by running a couple of commands in Command Prompt/Terminal.</p>
+        <p>We need to be an administrator to run these commands. To open the terminal as an administrator (for Windows 10), navigate to the terminal, right clicking and selecting “Run as Administrator” as seen below.</p>
+        <img
+            src="images/CommandPromptOpen.png"
+            height=400
+            width=500
+        <p></p>
+        <p>Once opened, we can now execute some commands.</p>
+        <p>To obtain the status of the service we have downloaded we can execute this command:</p>
+        <code>sc query npcap</code>
+        <p></p>
+        <p>The command “sc query” Obtains and displays information about the specified service, driver, type of service, or type of driver. In this case the service NPCap.
+The output should look something like this:
+</p>
+        <img
+            src="images/scquerynpcap.png"
+            height=400
+            width=500
+        <p></p>
+        <p>The important thing is that the service is in a STATE of RUNNING. You can see that the service is of a type KERNAL_DRIVER. Congratulations you have installed the NPCap service.</p>
+        <p>Another tutorial for this step can be found <a href=https://www.poftut.com/how-to-download-and-install-npcap-library-for-windows-packet-capture/>here</a>.</p>
+        <p>In the <a href=installingNPCapSDK.html>next section</a> we will install the NPCap SDK.</p>
+      </div>
+    </div>
+    <div id="footer">
+      Copyright &copy; black_white | <a href="http://validator.w3.org/check?uri=referer">HTML5</a> | <a href="http://jigsaw.w3.org/css-validator/check/referer">CSS</a> | <a href="http://www.html5webtemplates.co.uk">Free CSS Templates</a>
+    </div>
+  </div>
+</body>
+</html>

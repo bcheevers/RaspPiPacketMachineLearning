@@ -1,0 +1,193 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+  <title>Sniffing Packets</title>
+  <meta name="description" content="website description" />
+  <meta name="keywords" content="website keywords, website keywords" />
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+  <link rel="stylesheet" type="text/css" href="style/style.css" title="style" />
+</head>
+
+<body>
+  <div id="main">
+    <div id="header">
+      <div id="logo">
+        <div id="logo_text">
+          <!-- class="logo_colour", allows you to change the colour of the text -->
+          <h1><a href="index.html">NPCap<span class="logo_colour"> Tutorial</span></a></h1>
+          <h2>By Barry Cheevers</h2>
+        </div>
+      </div>
+      <div id="menubar">
+        <ul id="menu">
+          <!-- put class="selected" in the li tag for the selected page - to highlight which page you're on -->
+          <li><a href="index.html">Home</a></li>
+          <li><a href="installingVS.html">Visual Studio</a></li>
+          <li><a href="installingNPCap.html">NPCap Service</a></li>
+          <li><a href="InstallingNPCapSDK.html">NPCap SDK</a></li>
+          <li><a href="configVS.html">Config VS</a></li>
+          <li><a href="obtainingDeviceList.html">Obtain Device List</a></li>
+          <li class="selected"><a href="sniffingPackets.html">Sniffing Packets</a></li>
+        </ul>
+      </div>
+    </div>
+    <div id="site_content">
+      <div class="sidebar">
+      </div>
+      <div id="content">
+        <!-- insert the page content here -->
+        <h1>Sniffing Packets</h1>
+        <p>Now that we have obtained are network adapters we can now write code to select one of these adapter in order to obtain the live packet feed.The code below will fufill this function.</p>
+
+        <code>
+#include &lt;stdlib.h&gt;
+#include &lt;stdio.h&gt;
+#include &ltpcap.h&gt;
+#include &lttime.h&gt
+#ifdef WIN32
+#include &lttchar.h&gt;
+s
+BOOL LoadNpcapDlls()
+{
+	_TCHAR npcap_dir[512];
+	UINT len;
+	len = GetSystemDirectory(npcap_dir, 480);
+	if (!len) {
+		fprintf(stderr, "Error in GetSystemDirectory: %x", GetLastError());
+		return FALSE;
+	}
+	_tcscat_s(npcap_dir, 512, _T("\\Npcap"));
+	if (SetDllDirectory(npcap_dir) == 0) {
+		fprintf(stderr, "Error in SetDllDirectory: %x", GetLastError());
+		return FALSE;
+	}
+	return TRUE;
+}
+#endif
+
+/* prototype of the packet handler */
+void packet_handler(u_char* param, const struct pcap_pkthdr* header, const u_char* pkt_data);
+
+int main()
+{
+	pcap_if_t* alldevs;
+	pcap_if_t* d;
+	int inum;
+	int i = 0;
+	pcap_t* adhandle;
+	char errbuf[PCAP_ERRBUF_SIZE];
+
+	/* Load Npcap and its functions. */
+	if (!LoadNpcapDlls())
+	{
+		fprintf(stderr, "Couldn't load Npcap\n");
+		exit(1);
+	}
+
+	/* Retrieve the device list on the local machine */
+	if (pcap_findalldevs_ex(PCAP_SRC_IF_STRING, NULL, &alldevs, errbuf) == -1)
+	{
+		fprintf(stderr, "Error in pcap_findalldevs: %s\n", errbuf);
+		exit(1);
+	}
+
+	/* Print the list */
+	for (d = alldevs; d; d = d->next)
+	{
+		printf("%d. %s", ++i, d->name);
+		if (d->description)
+			printf(" (%s)\n", d->description);
+		else
+			printf(" (No description available)\n");
+	}
+
+	if (i == 0)
+	{
+		printf("\nNo interfaces found! Make sure Npcap is installed.\n");
+		return -1;
+	}
+
+	printf("Enter the interface number (1-%d):", i);
+	scanf_s("%d", &inum);
+
+	if (inum < 1 || inum > i)
+	{
+		printf("\nInterface number out of range.\n");
+		/* Free the device list */
+		pcap_freealldevs(alldevs);
+		return -1;
+	}
+
+	/* Jump to the selected adapter */
+	for (d = alldevs, i = 0; i < inum - 1; d = d->next, i++);
+
+	/* Open the device */
+	if ((adhandle = pcap_open(d->name,			// name of the device
+		65536,			// portion of the packet to capture
+					  // 65536 guarantees that the whole packet will be captured on all the link layers
+		PCAP_OPENFLAG_PROMISCUOUS, 	// promiscuous mode
+		1000,				// read timeout
+		NULL,				// authentication on the remote machine
+		errbuf			// error buffer
+	)) == NULL)
+	{
+		fprintf(stderr, "\nUnable to open the adapter. %s is not supported by Npcap\n", d->name);
+		/* Free the device list */
+		pcap_freealldevs(alldevs);
+		return -1;
+	}
+
+	printf("\nlistening on %s...\n", d->description);
+
+	/* At this point, we don't need any more the device list. Free it */
+	pcap_freealldevs(alldevs);
+
+	/* start the capture */
+	pcap_loop(adhandle, 0, packet_handler, NULL);
+
+	return 0;
+}
+
+
+/* Callback function invoked by libpcap for every incoming packet */
+void packet_handler(u_char* param, const struct pcap_pkthdr* header, const u_char* pkt_data)
+{
+	struct tm ltime;
+	char timestr[16];
+	time_t local_tv_sec;
+
+	/*
+	 * unused variables
+	 */
+	(VOID)(param);
+	(VOID)(pkt_data);
+
+	/* convert the timestamp to readable format */
+	local_tv_sec = header->ts.tv_sec;
+	localtime_s(&ltime, &local_tv_sec);
+	strftime(timestr, sizeof timestr, "%H:%M:%S", &ltime);
+
+	printf("%s,%.6d len:%d\n", timestr, header->ts.tv_usec, header->len);
+}
+
+        </code>
+        <h2>Explaining the Code</h2>
+        <p>The above code is taken from the SDK examples, however I have modified it slightly in order to make it work all in one file. I have removed the unnecessary “misc.h” file which was probably where the LoadNPCapDll function was located originally.</p>
+        <p>The main method begins almost identically to the code in the previous section as we must obtain a device list first. In the section marked “open the device” we open the adapter in order to obtain the packet data. The number 65536 dictates the size of packet we obtain. A lower number means less of the packets information will be obtained. 65536 is chosen as it is higher than the maximum transmission unit (MTU) of all packets. This means that we will always get all the packet information, irrespective of what protocol the received packet is using. Note this also means that the program is less efficient, as we are accommodating for packet protocols which may not be used on the network.</p>
+        <p>At the end of the main method we use a method called <code>pcap_loop()</code> which calls the function <code>packet_handler()</code> everytime we receive a packet.</p>
+        <p>The function <code>packet_handler()</code> outputs the time received(down to microseconds) and the length of the packet. Here is an example output:</p>
+        <img
+            src="images\packets.png"
+            width=200
+            height=300
+      <p></p>
+      <p>Congratulations! You have sniffed packets using NPCap!</p>
+      </div>
+    </div>
+    <div id="footer">
+      Copyright &copy; black_white | <a href="http://validator.w3.org/check?uri=referer">HTML5</a> | <a href="http://jigsaw.w3.org/css-validator/check/referer">CSS</a> | <a href="http://www.html5webtemplates.co.uk">Free CSS Templates</a>
+    </div>
+  </div>
+</body>
+</html>

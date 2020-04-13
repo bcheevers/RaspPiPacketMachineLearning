@@ -1,0 +1,70 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+  <title>Installing NPCap SDK</title>
+  <meta name="description" content="website description" />
+  <meta name="keywords" content="website keywords, website keywords" />
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+  <link rel="stylesheet" type="text/css" href="style/style.css" title="style" />
+</head>
+
+<body>
+  <div id="main">
+    <div id="header">
+      <div id="logo">
+        <div id="logo_text">
+          <!-- class="logo_colour", allows you to change the colour of the text -->
+          <h1><a href="index.html">NPCap<span class="logo_colour"> Tutorial</span></a></h1>
+          <h2>By Barry Cheevers</h2>
+        </div>
+      </div>
+      <div id="menubar">
+        <ul id="menu">
+          <!-- put class="selected" in the li tag for the selected page - to highlight which page you're on -->
+          <li><a href="index.html">Home</a></li>
+          <li><a href="installingVS.html">Visual Studio</a></li>
+          <li><a href="installingNPCap.html">NPCap Service</a></li>
+          <li class="selected"><a href="InstallingNPCapSDK.html">NPCap SDK</a></li>
+          <li><a href="configVS.html">Config VS</a></li>
+          <li><a href="obtainingDeviceList.html">Obtain Device List</a></li>
+          <li><a href="sniffingPackets.html">Sniffing Packets</a></li>
+        </ul>
+      </div>
+    </div>
+    <div id="site_content">
+      <div class="sidebar">
+      </div>
+      <div id="content">
+        <!-- insert the page content here -->
+        <h1>Installing NPCap SDK</h1>
+        <p>In this section we learn how to install the NPCap SDK.</p>
+        <h2>Preamble</h2>
+        <p>The NPCap SDK (Software Development Kit) will contain the code files we will reference in our own code. Inside the SDK file itself will be the header (.h) files and the library (.lib) files for the NPCap library/architecture. </p>
+        <p>Header files are files that tell the compiler how to call some functionality (without knowing how the functionality works) are called header files. They contain the function prototypes. They also contain Data types and constants used with the libraries. We use #include to use these header files in programs. This would be similar import in other programming languages.</p>
+        <p>Library files are files that contain the actual functionality i.e. they contain function body.</p>
+        <h2>Installing NPCap SDK</h2>
+        <p>Go to the NPCap website again <a href=https://nmap.org/npcap/>here</a> and this time scroll down and download the NPCap SDK, highlighted below:</p>
+        <img
+            src="images\SDKInstall.png"
+            width=600
+            height=150
+        <p></p>
+        <p>Unzip the downloaded file. The unzipped file should contain this content:</p>
+        <img
+            src="images\InsideZip.png"
+            width=450
+            height=150
+        <p></p>
+        <p>Place the unzipped folder into your preferred directory. I decided to place mine on my desktop for easy of access. Please <strong>save/remember the filepath to this folder</strong> as it will be important when we are configuring our Visual Studio Project.</p>
+        <h2>Official Documentation</h2>
+        <p>The SDK comes with official documentation and can be found in the “docs” folder. The docs are a series of .html files which you can open with your web browser. I recommend reading them once you are finished with this tutorial.</p>
+        <p>In the <a href="configVS.html">next section</a> I teach you how to create and configure your Visual Studio Project.</p>
+      </div>
+    </div>
+    <div id="footer">
+      Copyright &copy; black_white | <a href="http://validator.w3.org/check?uri=referer">HTML5</a> | <a href="http://jigsaw.w3.org/css-validator/check/referer">CSS</a> | <a href="http://www.html5webtemplates.co.uk">Free CSS Templates</a>
+    </div>
+  </div>
+</body>
+</html>

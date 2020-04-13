@@ -1,0 +1,149 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+  <title>Obtaining Device List</title>
+  <meta name="description" content="website description" />
+  <meta name="keywords" content="website keywords, website keywords" />
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+  <link rel="stylesheet" type="text/css" href="style/style.css" title="style" />
+</head>
+
+<body>
+  <div id="main">
+    <div id="header">
+      <div id="logo">
+        <div id="logo_text">
+          <!-- class="logo_colour", allows you to change the colour of the text -->
+          <h1><a href="index.html">NPCap<span class="logo_colour"> Tutorial</span></a></h1>
+          <h2>By Barry Cheevers</h2>
+        </div>
+      </div>
+      <div id="menubar">
+        <ul id="menu">
+          <!-- put class="selected" in the li tag for the selected page - to highlight which page you're on -->
+          <li><a href="index.html">Home</a></li>
+          <li><a href="installingVS.html">Visual Studio</a></li>
+          <li><a href="installingNPCap.html">NPCap Service</a></li>
+          <li><a href="InstallingNPCapSDK.html">NPCap SDK</a></li>
+          <li><a href="configVS.html">Config VS</a></li>
+          <li class="selected"><a href="obtainingDeviceList.html">Obtain Device List</a></li>
+          <li><a href="sniffingPackets.html">Sniffing Packets</a></li>
+        </ul>
+      </div>
+    </div>
+    <div id="site_content">
+      <div class="sidebar">
+      </div>
+      <div id="content">
+        <!-- insert the page content here -->
+        <h1>Obtaining the device list.</h1>
+        <p>It's time to look at some C code.This code will produce a list of your network adapters on your computer. When using NPCap we want to utilise on or more of these adapters in order to capture packets.</p>
+        <code>
+#include "pcap.h"
+
+int main()
+{
+	//Assigning the pointers alldevs and d to the type pcap_if
+	pcap_if_t* alldevs;
+	pcap_if_t* d;
+	int i = 0;
+	char errbuf[PCAP_ERRBUF_SIZE];
+
+	/* Retrieve the device list from the local machine */
+	/*Parameters Passed In: 
+		PCAP_SRC_IF_STRING:  Flag to pass to pcap_open(),
+		NULL: If any authorisation was needed(password etc) then it would be passed in here however since we don't we pass in NULL
+		&alldevs: Passes in the value of alldevs. We need to have the & prefix as alldevs is a pointer and not technically a variable.
+		errbuf: Will allow NPCap to provide us an error message.
+		*/
+
+	if (pcap_findalldevs_ex(PCAP_SRC_IF_STRING, NULL , &alldevs, errbuf) == -1)
+	{
+		/*If pcap_findalldevs_ex() errors then output error message and quit porgram.*/
+		fprintf(stderr, "Error in pcap_findalldevs_ex: %s\n", errbuf);
+		exit(1);
+	}
+
+	/* Print the list
+	For all devices in alldevs...*/
+	for (d = alldevs; d != NULL; d = d->next)
+	{
+		/*Format Output E.g 1.Name 
+		-> accesses the property from the structured vairable. In this case the structured variable is d and the property is name. */
+		printf("%d. %s", ++i, d->name);
+		if (d->description)
+			printf(" (%s)\n", d->description);
+		else
+			/*Some adapters may not have a description.*/
+			printf(" (No description available)\n");
+	}
+
+	/*If no devices are found, i will not have been incremented.*/
+	if (i == 0)
+	{
+		printf("\nNo interfaces found! Make sure Npcap is installed.\n");
+		return -1;
+	}
+
+	/* We don't need any more the device list. Free it */
+	pcap_freealldevs(alldevs);
+}
+        </code>
+        <h2>Explaining the Code</h2>
+        <p>The above code is taken from the SDK examples, however I have added more comments to offer a better explanation.</p>
+        <p>NPCap provides us with the function <code>pcap_findalldevs_ex()</code>.This function returns to us a linked list of pcap_if structured variables. Remember C is not designed to be an object orientated language, and so we use instead structured variables. Structured variables do not have methods associated with them so are more like dictionaries than objects. The pcap_if variables contain information regarding your network adapters, including their names and descriptions.</p>
+        <p>Here is an example output:</p>
+        <img
+            src="images\Output1.png"
+            width=600
+            height=100
+        <p></p>
+        <p>You can compare this to your computers device list by going to Device manager and then selecting the drop down for network devices, as shown below:</p>
+        <img
+            src="images\WinDeviceList.png"
+            width=450
+            height=300
+        <p></p>
+        <p>My “Bluetooth Device” and “Intel Dual Band” adapters are not picked up as they are not supported for capture. See the full list of NPCap supported adapters <a href=https://secwiki.org/w/Npcap/WiFi_adapters>here</a>.</p>
+        <p>Note: In the variable declaration we declare the variables  alldevs and d as the type pcap_if<strong>_t</strong>. The _t suffix simply denotes that this is a type declaration.(alldevs and d are actually pointers, not variables, as they are assigned using *. They behave just like variables however so in this tutorial we will just call them variables from now on).</p>
+        <p>To access an element of the structured variable, we use the -> operator, followed by the key of the variable. This is  similar to accessing an element in a dictionary. E.g in python:</p>
+        <code>
+          thisdict = {
+            "brand": "Ford",
+            "model": "Mustang",
+            "year": 1964
+          }
+
+          x = thisdict["model"]
+        </code>
+        
+          <p>In C,</p>
+          
+          <code>
+            struct Car 
+            {  
+            char brand[50]; 
+            char model[100]; 
+            int year[50]; 
+            };
+            
+            /*Initialize Structured Variable*/
+            struct Car car1 = {"Ford","Mustang",1964};
+            
+            /*Assign value to variable*/
+            
+            char str[] carmodel = Car->model;
+          </code>
+          
+
+        </code>
+        <p>In the <a href="sniffingPackets.html">next section</a> we will learn how to begin sniffing packets using an adapter.</p>
+      </div>
+    </div>
+    <div id="footer">
+      Copyright &copy; black_white | <a href="http://validator.w3.org/check?uri=referer">HTML5</a> | <a href="http://jigsaw.w3.org/css-validator/check/referer">CSS</a> | <a href="http://www.html5webtemplates.co.uk">Free CSS Templates</a>
+    </div>
+  </div>
+</body>
+</html>

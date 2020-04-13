@@ -1,0 +1,170 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+  <title>Configure VS</title>
+  <meta name="description" content="website description" />
+  <meta name="keywords" content="website keywords, website keywords" />
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+  <link rel="stylesheet" type="text/css" href="style/style.css" title="style" />
+</head>
+
+<body>
+  <div id="main">
+    <div id="header">
+      <div id="logo">
+        <div id="logo_text">
+          <!-- class="logo_colour", allows you to change the colour of the text -->
+          <h1><a href="index.html">NPCap<span class="logo_colour"> Tutorial</span></a></h1>
+          <h2>By Barry Cheevers</h2>
+        </div>
+      </div>
+      <div id="menubar">
+        <ul id="menu">
+          <!-- put class="selected" in the li tag for the selected page - to highlight which page you're on -->
+          <li><a href="index.html">Home</a></li>
+          <li><a href="installingVS.html">Visual Studio</a></li>
+          <li><a href="installingNPCap.html">NPCap Service</a></li>
+          <li><a href="InstallingNPCapSDK.html">NPCap SDK</a></li>
+          <li class="selected"><a href="configVS.html">Config VS</a></li>
+          <li><a href="obtainingDeviceList.html">Obtain Device List</a></li>
+          <li><a href="sniffingPackets.html">Sniffing Packets</a></li>
+        </ul>
+      </div>
+    </div>
+    <div id="site_content">
+      <div class="sidebar">
+      </div>
+      <div id="content">
+        <!-- insert the page content here -->
+        <h1>Creating and Configuring Visual Studio Project.</h1>
+        <p>In this section I go over how to create and configure the Visual Studio Project we will be using for coding with NPCap. This can be quite complicated so ensure you follow the instructions <strong>carefully</strong>.</p>
+        <h2>Determining CPU word size</h2>
+        <p>The first step of this process is to determine the word size of your computer’s CPU. To do this go to the “About” section of your computer. On Windows 10 type in the search bar “About your PC” to achieve this. You should see your computer’s specs. In particular we need to find the word size of the processor. The word size is denoted by an “x” prefix followed by the number. See below.</p>
+        <img
+            src="images\WordSize.png"
+            width = 400
+            height = 300
+        <p></p>
+        <p>In my case I have a CPU with a word size of 64. <strong>Make a note of your processors word size.</strong></p>
+        <h2>Creating a Console App In Visual Studio</h2>
+        <p>Visual Studio has many different templates to choose from whenever you create a new project. Let’s select the one that is right for us.</p>
+        <p>Open Visual Studio and click “Create New Project”.
+Below is part of the screen that should be displayed to you, this is where we select are template from.
+</p>
+        <img
+            src="images\Templates.png"
+            height=600
+            width=600
+            <p></p>
+        <p>Now carry out these following steps in order:</p>
+        <ul>
+          <li>
+            Select the programming language to be C++.
+          </li>
+    <li>
+        Select the platform to be Windows
+    </li>
+    <li>
+        Select the project type to be Console.
+    </li>
+</ul>
+        <p>This should filter the templates, select “Console App”, as seen below.</p>
+        <img
+            src="images\ConsoleAppSelect.png"
+            height=550
+            width=550
+        <p></p>
+        <p>Click "Next". Name your project name and solution name what ever you wish (I called mine “NPCap First Steps”) and then allow Visual Studio to create your project.</p>
+        <h2>Configure Visual Studio Project.</h2>
+        <p>There are several things we must do before we can start looking at code.</p>
+        <p>The first thing to change is the dev mode and word size we are using. This is why we looked up our computers word size. Look up to the tool bar of Visual Studio and scan right until you see these two options.</p>
+        <img
+            src="images\DebugSelect.png"
+            height=100
+            widht=600
+        <p></p>
+        <p> As seen above set dev mode to Debug and the word size to that of your computer. </p>
+        <p>Now we are going to import the header and library files. Make sure you have the file path to your NPCap SDK handy.</p>
+        <p>Navigate to your Solution explorer select your Project and click the property button (highlighted below)</p>
+        <img
+            src="images\Property.png"
+            width=250
+            height=250
+            <p></p>
+        <p>A window should appear</p>
+        <img
+            src="images\PropertyWindow.png"
+            width=600
+            height=400
+        <p>This is the properties/settings window for the project.</p>
+        <p>On the menu to the left select C/C++. This should change the “General Properties” window. At the top of the window there should be an “Additional Include Directories” section. Select this section and change the filepath so that it is pointing to the <strong>Include folder </strong> in your SDK. Here is a screen cap of this.</p>
+        <img
+            src="images\CProp.PNG"
+            width=600
+            height=400
+        <p>Next select “Linker” on the left-hand side menu. Again, the General Properties window should change. You should see a section on this window called “Additional Library Directories”. Edit this property so that it points to the appropriate <strong>library folder based on your word size</strong>. In my case, since I have an x64 word size, I will point to the folder called x64, as this contains the appropriate .lib files. If you have an x32 word size, use the .lib files that are not in the x64 folder. If you have x86, use the x64 .lib files. See below:</p>
+        <img
+            src="images\Linker Prop1.png"
+            width=600
+            height=400
+            <p></p>
+        <p>Double click the word “Linker” to open the drop down menu. Select “Input” and then in the window edit the “Additional Dependencies” section. You need to add the word “wpcap.lib” to this list of libraries. Failing that, delete all the libraries and paste this new list in:</p>
+        </p>
+<p>
+    wpcap.lib
+</p>
+<p>
+    kernel32.lib
+</p>
+<p>
+    user32.lib
+</p>
+<p>
+    gdi32.lib
+</p>
+<p>
+    winspool.lib
+</p>
+<p>
+    comdlg32.lib
+</p>
+<p>
+    advapi32.lib
+</p>
+<p>
+    shell32.lib
+</p>
+<p>
+    ole32.lib
+</p>
+<p>
+    oleaut32.lib
+</p>
+<p>
+    uuid.lib
+</p>
+<p>
+    odbc32.lib
+</p>
+<p>
+    odbccp32.lib
+</p>
+<p>
+    Ws2_32.lib
+</p>
+<p>Once this is done, the screen should look like this:</p>
+<img src="images\Linker Prop 2.png"
+     width=600
+     height=400
+     <p></p>
+     <p>We are now finished configuring the project.</p>
+     <p>In the <a href="obtainingDeviceList.html">next section</a> we will finally be able to look at some NPCap code.</p>
+      </div>
+    </div>
+    <div id="footer">
+      Copyright &copy; black_white | <a href="http://validator.w3.org/check?uri=referer">HTML5</a> | <a href="http://jigsaw.w3.org/css-validator/check/referer">CSS</a> | <a href="http://www.html5webtemplates.co.uk">Free CSS Templates</a>
+    </div>
+  </div>
+</body>
+</html>
